@@ -1,35 +1,82 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import { Configuration, OpenAIApi } from "openai";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [q, setq] = useState("");
+  const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
+  const configuration = new Configuration({
+    apiKey: import.meta.env.VITE_API_KEY,
+  });
+  const openai = new OpenAIApi(configuration);
+  const generateHashtags = async (e) => {
+    e.preventDefault();
 
+    if (!q) return alert("input cannot be empty");
+    else {
+      setLoading(true);
+      try {
+        const response = await openai.createCompletion(
+          {
+            model: "text-davinci-003",
+            prompt: `Generate and return only the hashtags for instagram post about: ${q}`,
+            temperature: 0.9,
+            max_tokens: 150,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0.6,
+          },
+          {
+            timeout: 5000,
+          }
+        );
+        setResponse(response.data.choices[0].text);
+        setq("");
+      } catch (error) {
+        setResponse(`${error.message} try again`);
+      }
+      setLoading(false);
+    }
+  };
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <h1>#tag</h1>
+      <form
+        onSubmit={generateHashtags}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "1rem",
+          flexDirection: "column",
+        }}
+      >
+        <input
+          style={{
+            fontSize: "1.5rem",
+            border: "none",
+            borderBottom: "2px solid whitesmoke",
+            padding: "0.5rem",
+          }}
+          placeholder="about your post"
+          type="text"
+          name="query"
+          id="query"
+          onChange={(e) => {
+            setq(e.target.value);
+          }}
+        />
+        <button
+          style={{ display: "block", border: "2px solid whitesmoke" }}
+          type="submit"
+        >
+          Generate
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      </form>
+      <p style={{ whiteSpace: "wrap" }}>{loading ? "Loading..." : response}</p>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
