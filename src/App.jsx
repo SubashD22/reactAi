@@ -41,40 +41,44 @@ function App() {
   };
   return (
     <div className="App">
-      <h1>#tag</h1>
-      <form
-        onSubmit={generateHashtags}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "1rem",
-          flexDirection: "column",
-        }}
-      >
-        <input
+      <div>
+        <h1>#tag</h1>
+        <form
+          onSubmit={generateHashtags}
           style={{
-            fontSize: "1.5rem",
-            border: "none",
-            borderBottom: "2px solid whitesmoke",
-            padding: "0.5rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "1rem",
+            flexDirection: "column",
           }}
-          placeholder="about your post"
-          type="text"
-          name="query"
-          id="query"
-          onChange={(e) => {
-            setq(e.target.value);
-          }}
-        />
-        <button
-          style={{ display: "block", border: "2px solid whitesmoke" }}
-          type="submit"
         >
-          Generate
-        </button>
-      </form>
-      <p style={{ whiteSpace: "wrap" }}>{loading ? "Loading..." : response}</p>
+          <input
+            style={{
+              fontSize: "1.5rem",
+              border: "none",
+              borderBottom: "2px solid whitesmoke",
+              padding: "0.5rem",
+            }}
+            placeholder="about your post"
+            type="text"
+            name="query"
+            id="query"
+            onChange={(e) => {
+              setq(e.target.value);
+            }}
+          />
+          <button
+            style={{ display: "block", border: "2px solid whitesmoke" }}
+            type="submit"
+          >
+            Generate
+          </button>
+        </form>
+        <p style={{ whiteSpace: "wrap" }}>
+          {loading ? "Loading..." : response}
+        </p>
+      </div>
     </div>
   );
 }
